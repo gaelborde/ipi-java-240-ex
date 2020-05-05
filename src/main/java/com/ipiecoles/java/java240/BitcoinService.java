@@ -8,19 +8,26 @@ public class BitcoinService {
 
     private Boolean forceRefresh = false;
 
+    private WebPageManager webPageManager;
+
     /**
      * Méthode qui renvoie le cours du Bitcoin
      * @return le cours du bitcoin
      * @throws IOException si impossible d'accéder à la bourse
      */
+
+    public BitcoinService(WebPageManager webPageManager) {
+        this.webPageManager = webPageManager;
+    }
+
     public Double getBitcoinRate() throws IOException {
         if(rate != null && !forceRefresh){
             System.out.println("Récupération du cours du bitcoin en cache...");
             return rate;
         }
-
         System.out.println("Récupération du cours du bitcoin sur site distant");
-        WebPageManager webPageManager = new WebPageManager();
+        //Mauvaise méthode car à chaque appel de la méthode on initialise WebPageManager alors que l'on voudrais qu'il soit initialisé 1 fois pour tout !
+        //WebPageManager webPageManager = new WebPageManager();
 
         String apiResponse = webPageManager.getPageContents("https://min-api.cryptocompare.com/data/price?fsym=BTC&tsyms=EUR");
         apiResponse = apiResponse.replace("{\"EUR\":","");
